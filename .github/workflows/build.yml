@@ -1,0 +1,47 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test-predictor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Physics tests
+        run: |
+          g++ -std=c++17 -O2 -Wall -Wextra -Iplugin/src tests/predictor_test.cpp -o predictor_test
+          ./predictor_test
+
+  build-windows:
+    runs-on: windows-latest
+    needs: test-predictor
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get BakkesMod SDK
+        run: git clone --depth 1 https://github.com/bakkesmodorg/BakkesModSDK.git "$env:RUNNER_TEMP\BakkesModSDK"
+
+      - name: Build plugin (BounceChecker.dll)
+        run: |
+          cmake -S plugin -B build/plugin -A x64 -DBAKKESMOD_SDK="$env:RUNNER_TEMP\BakkesModSDK"
+          cmake --build build/plugin --config Release
+
+      - name: Build launcher (RLBounceLauncher.exe)
+        run: |
+          cmake -S launcher -B build/launcher -A x64
+          cmake --build build/launcher --config Release
+
+      - name: Package
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item build/plugin/Release/BounceChecker.dll dist/
+          Copy-Item build/launcher/Release/RLBounceLauncher.exe dist/
+          Copy-Item README.md dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RLBounceChecker
+          path: dist/
