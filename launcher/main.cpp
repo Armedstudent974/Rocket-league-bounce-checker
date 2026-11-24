@@ -153,7 +153,9 @@ int wmain(int argc, wchar_t** argv) {
     SetConsoleTitleW(L"Rocket League Bounce Checker Launcher");
     std::wcout << L"=== Rocket League Bounce Checker ===\n"
                << L"Red line = predicted ball path, red boxes = where it bounces.\n"
-               << L"Works in Freeplay, Custom Training and offline matches.\n\n";
+               << L"Training menu: unlimited boost, ball reset/teleport, custom launches,\n"
+               << L"musty flick, air dribble and ceiling shot drills.\n"
+               << L"Works in Freeplay and Custom Training (not online matches).\n\n";
 
     enum class Platform { Auto, Steam, Epic, None } platform = Platform::Auto;
     for (int i = 1; i < argc; ++i) {
@@ -202,8 +204,8 @@ int wmain(int argc, wchar_t** argv) {
         else Warn(L"Couldn't launch Rocket League automatically - start it yourself.");
     }
 
-    std::wcout << L"\nIn game: open Freeplay or Custom Training. Toggle the overlay with F6 -> bounce_toggle\n"
-               << L"(or bind a key:  bind F3 bounce_toggle). Tweak with F6 -> bounce_seconds, bounce_max_bounces ...\n";
+    std::wcout << L"\nIn game: open Freeplay, then press F2 -> Plugins -> Bounce Checker for the menu.\n"
+               << L"Every button can be bound to a key, e.g. in the F6 console:  bind F3 bounce_repeat\n";
     PauseIfDoubleClicked();
     return 0;
 }

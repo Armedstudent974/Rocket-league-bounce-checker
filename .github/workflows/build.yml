@@ -10,10 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Physics tests
+      - name: Physics and drill tests
         run: |
           g++ -std=c++17 -O2 -Wall -Wextra -Iplugin/src tests/predictor_test.cpp -o predictor_test
           ./predictor_test
+          g++ -std=c++17 -O2 -Wall -Wextra -Iplugin/src tests/scenarios_test.cpp -o scenarios_test
+          ./scenarios_test
 
   build-windows:
     runs-on: windows-latest
